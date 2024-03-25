@@ -6,18 +6,20 @@
 # EXPOSE 80
 # CMD ["apache2-foreground"]
 # Stage 1: Build Stage
-FROM wordpress:latest AS builder
-
-# Create a temporary directory to copy wp-content and wp-includes directories
-WORKDIR /tmp/wp-custom
-
-# Copy wp-content and wp-includes directories from host to container
-COPY wp-content /tmp/wp-custom/wp-content
-COPY wp-includes /tmp/wp-custom/wp-includes
-
-# Stage 2: Final Stage
+# Use the official WordPress image as the base image
 FROM wordpress:latest
 
-# Copy wp-content and wp-includes directories from the builder stage
-COPY --from=builder /tmp/wp-custom/wp-content /var/www/html/wp-content
-COPY --from=builder /tmp/wp-custom/wp-includes /var/www/html/wp-includes
+# Set working directory
+WORKDIR /var/www/html
+
+# Remove the existing wp-includes directory
+RUN rm -rf wp-includes
+
+# Copy custom wp-includes directory from host to container
+COPY wp-includes /var/www/html/wp-includes
+
+# Ensure correct permissions
+RUN chown -R www-data:www-data wp-includes
+
+# Expose port 80 to allow access to the WordPress site
+EXPOSE 80
