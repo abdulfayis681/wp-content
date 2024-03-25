@@ -8,7 +8,6 @@
 # COPY --from=clone /app /var/www
 # COPY wp-content /var/www/html/wp-content/
 # COPY wp-includes /var/www/html/wp-includes/
----------------------------
 
 FROM alpine/git as clone
 WORKDIR /app
